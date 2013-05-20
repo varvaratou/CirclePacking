@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html>
+
+  <head>
+    <meta charset='utf-8' />
+    <meta http-equiv="X-UA-Compatible" content="chrome=1" />
+    <meta name="description" content="Circle packing : 15.456 Final project" />
+
+    <link rel="stylesheet" type="text/css" media="screen" href="stylesheets/stylesheet.css">
+
+    <title>Circle packing</title>
+  </head>
+
+  <body>
+
+    <!-- HEADER -->
+    <div id="header_wrap" class="outer">
+        <header class="inner">
+          <a id="forkme_banner" href="https://github.com/vatou/CirclePacking">View on GitHub</a>
+
+          <h1 id="project_title">Circle packing</h1>
+          <h2 id="project_tagline">15.456 Final project</h2>
+
+            <section id="downloads">
+              <a class="zip_download_link" href="https://github.com/vatou/CirclePacking/zipball/master">Download this project as a .zip file</a>
+              <a class="tar_download_link" href="https://github.com/vatou/CirclePacking/tarball/master">Download this project as a tar.gz file</a>
+            </section>
+        </header>
+    </div>
+
+    <!-- MAIN CONTENT -->
+    <div id="main_content_wrap" class="outer">
+      <section id="main_content" class="inner">
+        <p>by Varvara Toulkeridou</p>
+
+<h3>Main idea</h3>
+
+<p>The objective of this project was to implement a visualization of a circle packing algorithm. 
+Circle packing is a configuration of circles having a specified pattern of tangencies, as introduced by William Thurston in 1985. </p>
+
+<p><img src="http://i.stack.imgur.com/vm68m.jpg" alt="intro"></p>
+
+<h3>Motivation</h3>
+
+<p>Circle packing in architecture and design has being use as a tool for pattern generation. 
+<img src="https://s3.amazonaws.com/bucket.of.vatou/design2" alt="design2">
+Image source: Schiftner et al(2009)
+<img src="http://www.chrisbosse.de/projects/lochhaus/web/h1.jpg" alt="design1">
+Image source: <a href="http://www.chrisbosse.de/projects/lochhaus/web/h1.jpg">http://www.chrisbosse.de/projects/lochhaus/web/h1.jpg</a></p>
+
+<h3>Algorithm</h3>
+
+<p>After searching the relevant literature I chose to base my implementation on a circle packing algorithm described by Collins and Stephenson (2003), based on an iterative process first suggested by Thurston. 
+The algorithm takes as input a complex K and appropriate boundary conditions and through an iterative process computes the radii of the corresponding circle packing of K. The input complex K needs to be restricted to a finite triangulation. 
+While the algorithm can be applied to both Euclidean and Hyperbolic geometry, my visualization implementation focuses on Euclidean geometry. </p>
+
+<p><img src="http://www.math.fsu.edu/%7Emhurdal/posters/images/basicpack.gif" alt="cp"></p>
+
+<h3>Visualization description</h3>
+
+<p>The input complex K represents combinatorial relationships between circles. Every vertex represents a circle while each edge represents tangency between the circles it links. However, in order to simplify it for the user to generate an input planar graph, I applied triangulation to an input point set (the user adds point on the applet canvas by clicking). We see an example in the figure below.
+<img src="https://s3.amazonaws.com/bucket.of.vatou/snapshot4.png" alt="complex"></p>
+
+<p>Once the input complex is finalized radii values are applied to each circle. The boundary circles, determined here by the points belonging to the convex hull boundary of the point set are assigned a fixed value. The circles corresponding to the internal vertices are assigned a random radius which is going to change during the algorithm. 
+<img src="https://s3.amazonaws.com/bucket.of.vatou/snapshot5.png" alt="radiiAssignemnt"></p>
+
+<p>The computation of the radii is based on the following pseudocode provided by Stephenson(2005). The computation is based on testing the angle sum at each vertex v given the assigned radii. 
+A 'flower' is defined as a set of circles consisting of a central circle and some number of petal circles, a chain of successively tangent neighbors. The angle sum θ of the flower configuration is denoted by:</p>
+
+<p>θ(v; R) = Σ angle(R(v); R(u), R(w))</p>
+
+<p>Pseudo code for radii computation (Stephenson(2005)).</p>
+
+<pre><code>Input: 
+-List C of the circles 
+-List of the neighbors of each circle in order
+
+1.Initialize R by setting the radii of the boundary circles to fixed values
+  and the radii of the interior circles to arbitrary values 
+2.For each interior circle Ci:
+   a.Compute the interior angle sum θi using the law of cosines.
+   b.Adjust radius Ri for Ci to decrease the difference |2π- θi|:
+       If θi&lt;2π then decrease Ri
+       If θi&gt;2π then increase Ri
+3.If |2π- θi| &lt; ε for all interior circles Ci, then we are done 
+  else repeat step 2
+</code></pre>
+
+<p>Step 3b is responsible for decreasing or increasing the current label r of a given vertex v with a label r* that may give an angle sum of 2π. Stephenson (2005) suggests using a “uniform neighbor” model. The idea of this model is that we compare the current k-flower F for vertex v with a virtual uniform flower F’, one whose petal labels are set to a constant r chosen so that the angle sum θ is the same with that of F. </p>
+
+<p>If k is the number of petals, β = sin(Θ/2k) and δ = sin(pi/k)
+Then label r* can be computed by the following equations:
+r* = (β/1-β)(1-δ/δ) r</p>
+
+<p><img src="https://s3.amazonaws.com/bucket.of.vatou/snapshot1" alt="snapshot1"><img src="https://s3.amazonaws.com/bucket.of.vatou/snapshot3" alt="snapshot3"></p>
+
+<h3>References</h3>
+
+<p>Collins, C &amp; Stephenson, K. (2003). A circle packing algorithm. Computational Geometry, 25, 3, 233-256.                         <a href="http://citeseerx.ist.psu.edu/viewdoc/summary?doi=10.1.1.55.8546">http://citeseerx.ist.psu.edu/viewdoc/summary?doi=10.1.1.55.8546</a>
+Schiftner, A., Hobinger, M., Wallner, J., Pottmann, H. (2009). Packing circles and spheres on surfaces. Acm Transactions on Graphics, 28, 5. <a href="http://www.geometrie.tuwien.ac.at/hoebinger/mhoebinger_files/circlepackings.pdf">http://www.geometrie.tuwien.ac.at/hoebinger/mhoebinger_files/circlepackings.pdf</a>
+Stephenson, K. (2003). Circle Packing: A Mathematical Tale. Notices of the American Mathematical Society, 50, 11, 1376.<br><a href="http://www.ams.org/notices/200311/fea-stephenson.pdf">http://www.ams.org/notices/200311/fea-stephenson.pdf</a>
+Stephenson, K. (2005). Introduction to circle packing: The theory of discrete analytic functions. New York: Cambridge University Press. </p>
+      </section>
+    </div>
+
+    <!-- FOOTER  -->
+    <div id="footer_wrap" class="outer">
+      <footer class="inner">
+        <p class="copyright">Circle packing maintained by <a href="https://github.com/vatou">vatou</a></p>
+        <p>Published with <a href="http://pages.github.com">GitHub Pages</a></p>
+      </footer>
+    </div>
+
+    
+
+  </body>
+</html>
